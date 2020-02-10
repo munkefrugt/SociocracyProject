@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cicleClick</title>
+</head>
+<body>
+
+<p>cicleClick</p>
+
+
+<canvas id="canvas" width="1000" height="500"></canvas>
+<script>
+//src="car.js"
+
+var canvas = document.getElementById("canvas")
+var ctx = canvas.getContext("2d")
+
+var w = canvas.width
+var h = canvas.height
+
+var circle = {
+  x: w / 2,
+  y: h / 2,
+  r: 30,
+}
+// make the first circle 
+
+//ctx.beginPath()
+//ctx.fillStyle = "red"
+//ctx.arc(circle.x, circle.y, circle.r, 0, Math.PI*2, false)
+//ctx.fill()
+//ctx.closePath()
+    ctx.beginPath();
+    ctx.arc(circle.x, circle.y, circle.r, 0, Math.PI*2, false)
+    ctx.stroke();
+
+    /*class Car {
+  constructor(brand) {
+    this.carname = brand;
+  }
+  drawcircle(x) {
+    console.log("inside present  "+ x);
+    return x + ", I have a " + this.carname;
+    ctx.beginPath();
+    ctx.arc(circle.x+100, circle.y, circle.r, 0, Math.PI*2, false)
+    ctx.stroke();
+
+  }
+}
+
+mycar = new Car("Ford");
+mycar.present("hi");
+*/
+//document.getElementById("canvas").innerHTML = mycar.present("Hello");
+
+//document.getElementById("demo").innerHTML = mycar.present("Hello");
+
+// check if circle is clicked:
+window.onmousedown = function(e) {
+    x = e.pageX - canvas.getBoundingClientRect().left
+    y = e.pageY - canvas.getBoundingClientRect().top
+
+    // if circle 
+    x0 = circle.x;
+    y0 = circle.y;
+    distance = Math.sqrt((x-x0)*(x-x0) + (y-y0)*(y-y0))
+    console.log("here");
+
+    if (distance < circle.r) {
+      // https://stackoverflow.com/questions/16792841/detect-if-user-clicks-inside-a-circle
+
+        alert("get the chance to make a new circle!")
+        // get the chance to make a new circle 
+        
+        // make the circle red.
+        ctx.beginPath()
+        ctx.fillStyle = "red"
+        ctx.arc(circle.x, circle.y, circle.r, 0, Math.PI*2, false)
+        ctx.fill()
+        ctx.closePath()
+
+        //mycar = new Car("Ford");
+
+
+    }
+}
+
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

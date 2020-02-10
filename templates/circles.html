@@ -1,0 +1,61 @@
+<!-- https://www.w3schools.com/tags/canvas_arc.asp -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+/*div {
+  width: 500px;
+  height: 300px;
+  border: 1px solid black;
+  text-align: center;
+}*/
+</style>
+</head>
+<body>
+
+<p>Click in the div element below to get the x (horizontal) and y (vertical) coordinates of the mouse pointer, when it is clicked.</p>
+<!--
+<div onclick="showCoords(event)"><p id="demo"></p></div>
+
+<p><strong>Tip:</strong> Try to click different places in the div.</p>
+-->
+
+
+<canvas id="myCanvas" width="600" height="650" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<script>
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+
+
+// first add a circle when clicked.
+
+// WORKS!! makes a circle
+var c = document.getElementById('myCanvas');
+
+// make the first circle
+ctx.beginPath();
+ctx.arc(, y, 50, 0, 2 * Math.PI);
+ctx.stroke();
+
+var x;
+// use mouse to make cicrlces
+document.getElementById('myCanvas').addEventListener('click',function(evt){
+//alert(evt.clientX + ',' + evt.clientY + "mouse pos");
+x = evt.clientX;
+y = evt.clientY;
+// draw a circle from mouse x, y mouse click
+ctx.beginPath();
+ctx.arc(x, y, 50, 0, 2 * Math.PI);
+ctx.stroke();
+//console.log(x);
+},false);
+
+
+
+
+</script>
+
+</body>
+</html>
