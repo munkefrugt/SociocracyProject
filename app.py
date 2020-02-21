@@ -8,7 +8,6 @@ app = Flask(__name__)
 def home():
     return render_template("index.html")
 
-
 @app.route("/circles")
 def circles():
     return render_template("circles.html")
@@ -30,3 +29,7 @@ def tryKeys():
 @app.route("/trackMouse")
 def trackMouse():
     return render_template("trackMouse.html")
+
+@app.route("/tryWorker")
+def tryWorker():
+    return render_template("tryWorker.html")
