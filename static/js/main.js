@@ -1,11 +1,31 @@
 
-// When testing in browser, clear the cache by Ctrl + F5 , run in incognito mode. 
-// use web worker. https://www.w3schools.com/html/html5_webworkers.asp
+/* 
+By martin moltke wozniak in collaboration with Sociocracy for all 
+** notes: 
+"RUN Project/debug" press F5 in Visual studio code. 
+and to stop press shift + F5
 
 
+When testing in browser, clear the cache by Ctrl + F5 , run in incognito mode. 
+use web worker. https://www.w3schools.com/html/html5_webworkers.asp
+
+ GITHUB: goto brach symbol. in top right corner press "check sign" to commit. 
+  then  "..." -> "push to" 
+*/ 
 
 
+// how the program could be:  (DONT just make a lot of circles)
+// check if circle has been clicked. 
+  //if clicked  make a new circle (later on a button/ menu of what to do) 
+      // 1  new circle
+        // message "click where you want the center of the new circle"
+        // - send coordinates of new circle. by a mouse click. 
+          // - give it a name
 
+      // 2  circle members
+      // 3  logbook of circle
+      // 4  decisions of circle  
+      // 5  reposition circle 
 
 //project below:
 //************************************************** 
@@ -27,24 +47,73 @@ var circleArray = [];
 
 // make the first circle  general circle
 let generalCircle = new Circle(ctx,"generalCircle",w/2,h/2, 30 );
+let testCircle = new Circle(ctx,"testCircle",w/2+30,h/2+30, 30 );
 
 circleArray.push(generalCircle);
-console.log("push");
+circleArray.push(testCircle);
+
 generalCircle.showCircle();
+testCircle.showCircle();
 console.log(circleArray.length);
 
-// how the program could be:  (DONT just make a lot of circles)
-// check if circle has been clicked. 
-  //if clicked  make a button menu of what to do
-      // 1  new circle
-        // message "click where you want the center of the new circle"
-        // - send coordinates of new circle. by a mouse click. 
-          // - give it a name
-          
-      // 2  circle members
-      // 3  logbook of circle
-      // 4  decisions of circle  
-      // 5  reposition circle    
+// deafual no circle is selected or infocus
+focusCircle = null; 
+
+// this block checks whether the mouse is pressing a circle. 
+// and if that circle has been clicked.
+// and can make new circles.
+window.onmousedown = function(e) {
+  x = e.pageX - canvas.getBoundingClientRect().left
+  y = e.pageY - canvas.getBoundingClientRect().top
+  mouseY = y;
+  mouseX = x; 
+  console.log(focusCircle);
+    // check if a circle is in focus or not-
+
+    // A focus circle is selected
+    if (focusCircle != null){
+      alert("new coordinates found (x,y) "+mouseX+","+mouseY);
+      // add new circle to new location
+      
+      let thirdCircle = new Circle(ctx,"thirdCircle",mouseX,mouseY, 30 );
+      console.log("newCircle"); 
+      circleArray.push(thirdCircle);
+      thirdCircle.showCircle();
+    }
+    // no focus circle is found, check if mouse is inside one. 
+    if(focusCircle == null){
+    //loop trough all circles and check if mouse is inside. 
+    for (var i = 0; i < circleArray.length; i++) {
+      
+      //console.log(circleArray[i].x);
+      x0 = circleArray[i].x;
+      y0 = circleArray[i].y;
+      distance = Math.sqrt((x-x0)*(x-x0) + (y-y0)*(y-y0));
+
+      // if mouse is inside circle
+      if (distance < circleArray[i].r) {
+        console.log("clicked");
+        circleArray[i].changeColor("green"); 
+        circleArray[i].showCircle();
+
+        // tell user to make new circle. 
+        alert("make new circle, click where you want the center of the new circle");
+        // set the focus circle to the circle that was clicked.
+        focusCircle = circleArray[i]; 
+        // jump out of loop
+        break;
+        
+      }
+    }
+  }
+}
+
+
+
+
+
+// ******************* APENNDIX EXTRA CODE
+// *******************
 
 
 
