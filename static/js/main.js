@@ -47,18 +47,38 @@ var circleArray = [];
 
 // make the first circle  general circle
 let generalCircle = new Circle(ctx,"generalCircle",w/2,h/2, 30 );
-let testCircle = new Circle(ctx,"testCircle",w/2+30,h/2+30, 30 );
+//let testCircle = new Circle(ctx,"testCircle",w/2+30,h/2+30, 30 );
 
 circleArray.push(generalCircle);
-circleArray.push(testCircle);
+//circleArray.push(testCircle);
 
 generalCircle.showCircle();
-testCircle.showCircle();
+//testCircle.showCircle();
 console.log(circleArray.length);
 
 // deafual no circle is selected or infocus
-focusCircle = null; 
+var focusCircle = null; 
+console.log(focusCircle);
+var circleGettingPlaced = false; 
+var ifNewCircleButtonPressed = false; 
 
+function activateNewCircle() {
+  //alert("botton clicked , press for new circle coordinates");
+  // make new circle
+  if(focusCircle != null){
+    ifNewCircleButtonPressed = true; 
+  }
+  if(focusCircle == null){
+    alert("No circle is chosen to build onto. Please choose a focus circle");
+  }
+}
+
+function exitFocusCircle() {
+  // make all circles white
+  // (close all information if any)
+  console.log("exit circle")
+  focusCircle = null; 
+}
 // this block checks whether the mouse is pressing a circle. 
 // and if that circle has been clicked.
 // and can make new circles.
@@ -67,21 +87,37 @@ window.onmousedown = function(e) {
   y = e.pageY - canvas.getBoundingClientRect().top
   mouseY = y;
   mouseX = x; 
-  console.log(focusCircle);
-    // check if a circle is in focus or not-
-
-    // A focus circle is selected
-    if (focusCircle != null){
-      alert("new coordinates found (x,y) "+mouseX+","+mouseY);
+  console.log("ifNewCircleButtonPressed = " + ifNewCircleButtonPressed) ;
+  console.log("focusCircle = ");
+  this.console.log(focusCircle);
+    //make new circle if button is pressed and and the focus circle is not null
+    if(ifNewCircleButtonPressed && focusCircle != null){
+      this.console.log("make new circle");
+      // make a new circle
+      //alert("MAKE NEW CIRCLE, new coordinates found (x,y) "+mouseX+","+mouseY);
       // add new circle to new location
       
-      let thirdCircle = new Circle(ctx,"thirdCircle",mouseX,mouseY, 30 );
+      let newCircle = new Circle(ctx,"newCircle",mouseX,mouseY, 30 );
       console.log("newCircle"); 
-      circleArray.push(thirdCircle);
-      thirdCircle.showCircle();
+      circleArray.push(newCircle);
+      newCircle.showCircle();
+
+      
+      
+      ifNewCircleButtonPressed = false; 
+      // add line from focus circle center to new center
+      ctx.beginPath();
+      ctx.moveTo(focusCircle.x, focusCircle.y);
+      ctx.lineTo(mouseX, mouseY);
+      ctx.stroke();
+
+      //focusCircle = null;
+
     }
-    // no focus circle is found, check if mouse is inside one. 
-    if(focusCircle == null){
+    
+    // check for focus circle. 
+    if(ifNewCircleButtonPressed == false && focusCircle == null ){
+      console.log("checking if circle is clicked not making new circles");
     //loop trough all circles and check if mouse is inside. 
     for (var i = 0; i < circleArray.length; i++) {
       
@@ -106,6 +142,7 @@ window.onmousedown = function(e) {
       }
     }
   }
+  else console.log("ELSE no cirle made not searching for circles to click");
 }
 
 
