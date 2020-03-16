@@ -46,7 +46,9 @@ var circleArray = [];
 
 
 // make the first circle  general circle
-let generalCircle = new Circle(ctx,"generalCircle",w/2,h/2, 30 );
+let generalCircle = new Circle(ctx,"generalCircle",w/2,h/2, 30 );ctx.font = "20px Georgia";
+ctx.fillText("Hello World!", 10, 50);
+
 //let testCircle = new Circle(ctx,"testCircle",w/2+30,h/2+30, 30 );
 
 circleArray.push(generalCircle);
@@ -78,6 +80,32 @@ function exitFocusCircle() {
   // (close all information if any)
   console.log("exit circle")
   focusCircle = null; 
+}
+function changeName() {
+  
+  console.log("changeName");
+  if(focusCircle != null){
+    var name = document.getElementById("myText").value;
+    alert(name);
+    focusCircle.setName(name);
+    focusCircle.showName();
+  }
+  if(focusCircle == null){
+    alert("No circle is chosen to build onto. Please choose a focus circle");
+  }
+  
+}
+
+function reDisplayAll() {
+  // clear canvas?? 
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (var i = 0; i < circleArray.length; i++) {
+    circleArray[i].changeColor("white"); 
+    circleArray[i].showCircle();
+    circleArray[i].showName();
+  }
+
+  console.log("reDisplay");
 }
 // this block checks whether the mouse is pressing a circle. 
 // and if that circle has been clicked.

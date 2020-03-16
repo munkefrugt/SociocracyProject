@@ -33,3 +33,11 @@ def trackMouse():
 @app.route("/tryWorker")
 def tryWorker():
     return render_template("tryWorker.html")
+
+@app.route("/p5Test")
+def p5Test():
+    return render_template("p5Test.html")
+
+@app.route("/p5button")
+def p5button():
+    return render_template("p5button.html")

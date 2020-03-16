@@ -1,3 +1,6 @@
+// java script
+
+
 var i = 0;
 
 // the let thing is like making  it global. ?
@@ -18,14 +21,26 @@ let Circle = class {
       this.ctx.arc(this.x, this.y, this.r, 0, Math.PI*2, false)
       this.ctx.fill()
       this.ctx.stroke();
+      // show name
 
-      //return `${this.name}`;
+
   }
 
   changeColor(x){
     this.color = x;
-    
   }
+
+  setName(name){
+    this.name = name; 
+
+  }
+  
+
+  showName(){
+    this.ctx.fillStyle = "black";
+    this.ctx.fillText(this.name, this.x-this.r, this.y-10-this.r);
+  }
+  // not usd
   makeline(){
     console.log("test line");
     
@@ -34,7 +49,6 @@ let Circle = class {
     this.ctx.lineTo(400, 400);
     this.ctx.stroke();
    
-    
   }
   
 
