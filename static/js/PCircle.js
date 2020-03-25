@@ -2,9 +2,17 @@ class PCircle {
 
   
   constructor(circleId) {
+
+
+
     print("constructor");
-    this.x = random(width);
-    this.y = random(height);
+    this.aim = "default"; 
+    this.domain = "default"; 
+    this.x = mouseX+500;//random(width);
+    this.y = mouseY;//random(height);
+
+    this.Vcenter = createVector(this.x, this.y);
+    
     //this.diameter = random(100, 200);
     //this.radius = diameter/2;
     this.radius = 50;
@@ -21,42 +29,85 @@ class PCircle {
     // default referes mother circle to it self. somehow. 
     
     this.name = circleId;  // default the name is the number
+    this.peopleInCircle = []
+    
   }
 
   display() {
     //let c = color(255, 204, 0);
     
     
-
+    
     fill(this.c);
+    stroke(0);
+    strokeWeight(2);
+    // display circle
     ellipse(this.x, this.y, this.radius*2);
     fill(0); 
+    noStroke();
     textSize(16);
     // puts text in center.
     textAlign(CENTER); 
     text("circle name= "+ this.name, this.x, this.y);
 
     text("id= "+this.circleId, this.x, this.y+20);
-
-    if(this.parrentCircle != null){
-      text("parrent: " +this.parrentCircle.name, this.x, this.y+40); 
-    }
+    // cant call the parrentCircle.name from this class.. ?? but it works from main
+      //text("parrent: " +this.parrentCircle.name, this.x, this.y+40); 
     
+    
+    
+    // children of circle info. 
     for (let i = 0; i < this.childrenOfThisCircle.length; i++){
-      text("child: "+ this.childrenOfThisCircle[i].name, this.x, this.y+ 60 + (i* 20)); 
+      text("child name: "+ this.childrenOfThisCircle[i].name, this.x, this.y+ 60 + (i* 20)); 
     }
 
 
-    //circle(this.x, this.y, this.radius);
+    // display people in circle
+    let angle = 0;
 
-    // if circle is a focuscircle then show buttons
-    /*if(this.isFocusCircle == true){
+    let angleDifference =  360 / this.peopleInCircle.length; 
+    for (let i = 0; i < this.peopleInCircle.length; i++){
+      text("person name: "+ this.peopleInCircle[i].name, this.x, this.y+ 100 + (i* 20)); 
+      // display circle
+      //print("angle diff " + angleDifference);
+
+      //print("angle " + angle);
+      //let angle = 180; 
+      // make circle coordinates on the perameter. 
+       
+      // center of big circle
+      let x0 = this.x;
+      let y0 = this.y;
+      // get coordinates
+
+      let x1 = x0 + this.radius * cos(angle);
       
-    ellipse(this.x + this.radius, this.y + this.radius,50);
- 
-    }
-    */
+      let y1 = y0 + this.radius * sin(angle);
+      
+      //peopleInCircle[i]
 
+      fill(255);
+      stroke(0);
+      strokeWeight(2);
+      ellipse(x1,y1,20); 
+
+      //this.peopleInCircle[i]. 
+      angle = angle + angleDifference;  
+
+    }
+
+
+
+  }
+  // is mouse inside? 
+  isMouseInCircle(px,py){
+    let d = dist(px,py,this.x,this.y);
+    if(d < this.radius){
+      return true; 
+    }
+    else{
+      return false;
+    }
   }
 
   setColor() {
@@ -69,19 +120,10 @@ class PCircle {
 
   makeChild(childCircle){
     this.childrenOfThisCircle.push(childCircle); 
-    print(this.childrenOfThisCircle); 
+    //print(this.childrenOfThisCircle); 
   }
   
-  giveChildrenNewParrent(newParrent){
-    for (let i = 0; i < this.childrenOfThisCircle.length; i++){
-    this.childrenOfThisCircle[i].parrentCircle = newParrent; 
-    }
-
-  }
-
-  getChildrenOfThisCircle() {
-    return getChildrenOfThisCircle; 
-  }
+  
 
   
 }

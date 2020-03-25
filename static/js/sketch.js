@@ -1,6 +1,7 @@
 // Declare object
 let numOfCircles = 10;
 let circleId = 0;
+let personId = 0;
 // array of circles
 let circles = [];
 let people = [];
@@ -12,10 +13,17 @@ let people = [];
 //xtest = 99999;
 
 let focusCircle = null;
-let lastFocusCircle = null;
+let focusPerson = null; 
+
 let inputButton;
 let newCircleBtn;
 let deleteCircleBtn;
+let changeAimBtn;
+let ChangeDomainBtn; 
+let newPersonBtn
+
+let person1; 
+//let activateCircleInfo = true;  
 //let latestAddedCircle; 
 
 
@@ -23,20 +31,25 @@ let deleteCircleBtn;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   
-  frameRate(1); 
+  frameRate(20); 
 
   // input
   input = createInput();
   input.position(19, 19);
 
-  inputButton = createButton('user input');
+  inputButton = createButton('change name of circle');
   inputButton.position(input.x + input.width, 19);
-  inputButton.mousePressed(userInput);
+  inputButton.mousePressed(changeNameOfCircle);
 
   // make new circle button
   newCircleBtn = createButton('add circle');
   newCircleBtn.position(19,inputButton.height+19);
   newCircleBtn.mousePressed(addCircle);  
+
+  // make new person in circle button
+  newPersonBtn = createButton('create new person');
+  newPersonBtn.position(19+100,inputButton.height+19);
+  newPersonBtn.mousePressed(newPerson); 
   
   // delete circle button. 
 
@@ -44,61 +57,129 @@ function setup() {
   deleteCircleBtn.position(19, inputButton.height + newCircleBtn.height+19);
   deleteCircleBtn.mousePressed(deleteCircle); 
 
+  // change aim button. 
+
+  changeAimBtn = createButton('change Aim');
+  changeAimBtn.position(19, 320);
+  changeAimBtn.mousePressed(changeAim); 
+
+  // change domain button
+  
+  changeDomainBtn = createButton('change domain');
+  changeDomainBtn.position(19, 350);
+  changeDomainBtn.mousePressed(changeDomain);
+  
+  // add person to circle
+  addPersonToCircleBtn = createButton('add person to circle');
+  addPersonToCircleBtn.position(19, 350);
+  addPersonToCircleBtn.mousePressed(addPersonToCircle);
+
   // use push. 
   circles.push(new PCircle(circleId));
+
+  person1 = new Person();
+  // create a person and add it to the general circle
 
 
 }
 
 function draw() {
 
-  background(50, 89, 100);
+  background(0,100,150);
+  angleMode(DEGREES);
 
   // make lines
-  // activate again: for lines
-
-  //line(400,400,600,600);
-  
-  
-  //line(circles[i].x,circles[i].y,circles[i].parrrentCircle.x,circles[i].parrrentCircle.y);
-  
   for (let i = 0; i < circles.length; i++) {
-    //print("start lines");
-    print("i = "+i); 
-    //print(circles[i])
-    print("circles[i].parrrentCircle" );
-    
-    print(circles[i].parrrentCircle)
 
     if(circles[i].parrrentCircle != null){
-
-      print("line"); 
+      stroke(0);
+      strokeWeight(2);
+      //fill(255);
       line(circles[i].x,circles[i].y,circles[i].parrrentCircle.x,circles[i].parrrentCircle.y);
     }
   } 
   
-    
-  
+  // DISPLAY CIRCLES: 
+
   // show all cirles. 
   for (let i = 0; i < circles.length; i++) {
-    // if circle is parrent make line
-    
     circles[i].display();
-
     
   }
   
-  // display lines. 
+  // show info about circle
+  if(focusCircle != null){
+    stroke(0);
+    strokeWeight(1);
+    fill(255);
+    rect(12, 100, 200, 200);
+    
+    fill(0);
+    noStroke();
+    textAlign(LEFT); 
+    text("aim : "+focusCircle.aim, 12+10, 200);
+    text("domain : "+focusCircle.domain, 12+10, 220);
+    
 
+  }
+
+
+  // show all people in the side bar: 
+  for (let i = 0; i < people.length; i++) {
+    people[i].display();
+    
+  }
+
+  
 }
 
 
 // functions out of draw loop.
-function userInput() {
+function changeNameOfCircle() {
   let userInput = input.value();
-  print(userInput); 
+  //print(userInput); 
   focusCircle.name = userInput; 
 }
+
+function addPersonToCircle(){
+  print("add person to circle"); 
+  if(focusPerson != null){  
+    focusCircle.peopleInCircle.push(focusPerson); 
+    print("add person to circle");
+    print(focusCircle.peopleInCircle);
+    // 
+    
+  }
+}
+
+// create a new person in system
+function newPerson(){
+  
+  if (focusCircle != "null"){
+    
+    // get name from input
+    let userInput = input.value();
+    if( userInput.length >=  3){
+      print("make new person");
+
+      //alert("give new person a name in the")
+    let person = new Person(userInput,personId);
+    
+    
+    //focusCircle.peopleInCircle.push(person); 
+
+    
+    people.push(person);
+    personId ++; 
+    }
+    else{
+      alert("give person a name at least 3 chacracteres"); 
+    }
+  }
+  
+
+}
+
 function addCircle() {
   
   if (focusCircle != null){
@@ -110,6 +191,10 @@ function addCircle() {
   circles.push(newCircle);
 
   newCircle.parrrentCircle = focusCircle;
+  // works
+  print("new parrent name : "+ newCircle.parrrentCircle.name);
+  print(newCircle.parrrentCircle);
+  
   //newCircle.setParrent(focusCircle);
   // add circle; 
   newCircle.c = color(0,200,200);
@@ -125,18 +210,178 @@ function addCircle() {
   // make line from parent to child circle. 
 }
 
+
+
+
+function mouseClicked() {
+  print("mouse clicked");
+  for (let i = 0; i < people.length; i++) {
+    print("check people");  
+    if(people[i].isMouseInPerson(mouseX,mouseY)){
+      print("mouse is in person circle.");
+      // mouse is in person.
+      // cancel olg focus person
+      
+      // reset focus person clickability.
+      if(focusPerson!= null){
+        // make person circle white again
+        focusPerson.c = color(255);
+        focusPerson = null; 
+      }
+      
+
+      // new focus person
+      focusPerson= people[i];
+      print(focusPerson);
+      people[i].c = color(255,255,0);
+      break
+      
+      
+    }
+
+    
+  }
+  //print("next loop"); 
+  // search for new circle to activate
+
+
+  for (var i = 0; i < circles.length; i++) {
+    if(circles[i].isMouseInCircle(mouseX,mouseY)){
+
+      console.log("clicked");
+      
+      // important about focus Circle:
+      // reason for focus circle:  so the old one can be disabled. 
+      // the focus is also used as parent circle for new circles. 
+      
+      // save what circle was the last focus circle so we can clear it.
+
+      // update focus circle:
+      // make current focus circle white
+      if (focusCircle != null){
+        focusCircle.c  = color(255);
+
+      }
+      // make new selected circle orange
+      focusCircle = circles[i]; 
+      circles[i].setColor();     
+      break;
+    }
+  }
+  
+  
+  
+  // prevent default, dont delete this line: 
+  return false;
+}
+
+function mouseDragged() { 
+
+  if(focusCircle.isMouseInCircle(mouseX,mouseY)){
+      //print("mouse dragged" + mouseDraggedTest); 
+  //mouseDraggedTest++; 
+  // get id
+  let focusId = focusCircle.circleId;
+
+  circles[focusId].x = mouseX;
+  circles[focusId].y = mouseY;
+  }
+
+} 
+
+function doubleClicked() {
+  // if inside of focuscircle
+  
+  if(focusCircle.isMouseInCircle(mouseX,mouseY)){
+    print("double clicked");
+    // show aims and domain
+    
+      // make box
+      activateCircleInfo = true; 
+
+
+    
+
+  }
+
+  
+  
+}
+
+function changeDomain(){
+  if(focusCircle != null){
+    let userInput = input.value();
+    //print(userInput); 
+    focusCircle.domain = userInput; 
+  }
+}
+
+
+function changeAim(){
+  if(focusCircle != null){
+  let userInput = input.value();
+  //print(userInput); 
+  focusCircle.aim = userInput; 
+  }
+}
+
 // messed up!!
 function deleteCircle() {
   print("delete");
+  /*
 
   // rewrite. 
 
-  /*
+  
 
 
   // get the id of the circle that gets deleted.
   let locaDeleteId = focusCircle.circleId; 
+  // test if parrents are there. 
+  print("delete function, test parrent: "+ circles[locaDeleteId].parrrentCircle.name);
+  print(circles[locaDeleteId].parrrentCircle);
 
+  if(locaDeleteId != 0 ){
+    
+    print("deleting"); 
+    newParrent = circles[locaDeleteId].parrrentCircle;
+    //give the children new parretns
+    print("circles[locaDeleteId].childrenOfThisCircle")
+    print(circles[locaDeleteId].childrenOfThisCircle); 
+
+
+    childArray = circles[locaDeleteId].childrenOfThisCircle;
+
+    for (let i = 0; i < childArray.length; i++) {
+      childArray[i].parrrentCircle = newParrent;  
+      print("new parrent for child : " + childArray[i].name);
+      print("parrent name: " + childArray[i].parrrentCircle.name);
+
+    }
+
+    // delete
+    circles.splice(locaDeleteId,1);
+
+  
+
+
+    // change the ids. now the array has moved!
+    print("print ids")
+    for (let i = circles.length-1; i >= 0; i--) {
+      print(i); 
+      print(circles[i]);
+      circles[locaDeleteId].circleId --; 
+
+    }
+    
+    while(locaDeleteId <  circles.length){
+      circles[locaDeleteId].circleId --; 
+      locaDeleteId ++; 
+    }
+  }
+  */
+
+  /*
   if(locaDeleteId != 0){
   // give the current focus circle's children a new parrent. 
 
@@ -175,66 +420,3 @@ function deleteCircle() {
   
 */
 }
-
-
-function mouseClicked() {
-    
-  // search for new circle to activate
-
-  for (var i = 0; i < circles.length; i++) {
-    
-    var x0 = circles[i].x;
-    var y0 = circles[i].y;
-    
-    distance = dist(x0,y0,mouseX,mouseY);
-    //var distance = Math.sqrt((mouseX-x0)*(mouseX-x0) + (mouseY-y0)*(mouseY-y0));
-    
-    if (distance < circles[i].radius) {
-      console.log("clicked");
-      
-      // important about focus Circle:
-      // reason for focus circle:  so the old one can be disabled. 
-      // the focus is also used as parent circle for new circles. 
-      
-      // save what circle was the last focus circle so we can clear it.
-      /*
-      lastFocusCircle = focusCircle;
-      lastFocusCircle.c = color(255, 255,255);
-      lastFocusCircle = null;
-      */
-      
-
-      // update focus circle:
-      // make current focus circle white
-      if (focusCircle != null){
-        focusCircle.c  = color(255);
-
-      }
-      // make new selected circle orange
-      focusCircle = circles[i]; 
-      circles[i].setColor();
-
-      
-      break;
-    }
-  }
-  
-  
-  
-  // prevent default, dont delete this line: 
-  return false;
-}
-
-function mouseDragged() { 
-  //print("mouse dragged" + mouseDraggedTest); 
-  //mouseDraggedTest++; 
-  // get id
-  let focusId = focusCircle.circleId;
-  circles[focusId].x = mouseX;
-  circles[focusId].y = mouseY;
-  
-  //print("x"+focusCircle.x);
-  //print("y"+focusCircle.y);
-
-
-} 
