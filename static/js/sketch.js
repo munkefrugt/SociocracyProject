@@ -2,8 +2,11 @@
 let numOfCircles = 10;
 let circleId = 0;
 let personId = 0;
+let roleIdNum = 0;
 // array of circles
-let circles = [];
+//let circles = [];
+
+// the actual people. 
 let people = [];
 
 // it seems that both let or "empty variable type" can be accesd from other classses. 
@@ -31,7 +34,7 @@ let person1;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   
-  frameRate(20); 
+  frameRate(1); 
 
   // input
   input = createInput();
@@ -74,8 +77,24 @@ function setup() {
   addPersonToCircleBtn.position(19, 350);
   addPersonToCircleBtn.mousePressed(addPersonToCircle);
 
+  // add role to circle
+  addRoleToCircleBtn = createButton('add role to circle');
+  addRoleToCircleBtn.position(19, 350+30);
+  addRoleToCircleBtn.mousePressed(addRoleToCircle);
+
+
   // use push. 
+
+  circles = [];
+
   circles.push(new PCircle(circleId));
+  //circles[0].rolesInCircle.push(new Role(roleID));
+  //circles[0].rolesInCircle[0].name = "first person ";
+  //circles[0].rolesInCircle[0].x = 10;
+ 
+
+  print(circles);
+
 
   person1 = new Person();
   // create a person and add it to the general circle
@@ -102,8 +121,51 @@ function draw() {
   // DISPLAY CIRCLES: 
 
   // show all cirles. 
+  print("show circles")
+  print(circles);
   for (let i = 0; i < circles.length; i++) {
     circles[i].display();
+
+    
+    print("circleId " + circles[i].circleId);
+    // display roles. 
+    print("print roles .lenght");
+    print(circles[i].rolesInCircle.length);
+
+    let angle;
+    
+    let angleDifference = 360/ circles[i].rolesInCircle.length;  
+
+    for (let j = 0; j < circles[i].rolesInCircle.length; j++) {
+
+      /*print("roleName"); 
+      print(circles[i].rolesInCircle[j].name);   
+      print(circles[i].rolesInCircle[j].term);  
+      print(circles[i].rolesInCircle[j].domain);  
+      print(circles[i].rolesInCircle[j].roleId);    */
+
+      // give x and x for this role. 
+      // role radius: 
+      let eR = circles[i].rolesInCircle[j].radius; 
+
+      let x1 = x0 + eR * cos(angle);
+      let y1 = y0 + eR * sin(angle);
+      circles[i].rolesInCircle[j].x = x1;
+      circles[i].rolesInCircle[j].y = y1;
+
+      //ellipse(x1, y1, 10);
+      fill(255);
+      stroke(0);
+      strokeWeight(2);
+      let eX = circles[i].rolesInCircle[j].x; 
+      let eY = circles[i].rolesInCircle[j].y;
+
+      ellipse(eX,eY,eR *2);
+
+      angle = angle + angleDifference;  
+
+
+    }
     
   }
   
@@ -140,13 +202,28 @@ function changeNameOfCircle() {
   //print(userInput); 
   focusCircle.name = userInput; 
 }
+function addRoleToCircle(){
+  if(focusCircle != null){
+  let role = new Role();
+  focusCircle.rolesInCircle.push(role); 
+  role.roleId = roleIdNum;
+  
+  print("create role with id:")
+  print(role.roleId); 
+
+  roleIdNum++; 
+  
+  }
+  
+}
 
 function addPersonToCircle(){
   print("add person to circle"); 
   if(focusPerson != null){  
+    // add a role to circle
     focusCircle.peopleInCircle.push(focusPerson); 
     print("add person to circle");
-    print(focusCircle.peopleInCircle);
+    //print(focusCircle.peopleInCircle);
     // 
     
   }
@@ -324,6 +401,8 @@ function changeAim(){
   focusCircle.aim = userInput; 
   }
 }
+
+
 
 // messed up!!
 function deleteCircle() {

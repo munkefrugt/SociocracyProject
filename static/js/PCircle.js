@@ -29,8 +29,9 @@ class PCircle {
     // default referes mother circle to it self. somehow. 
     
     this.name = circleId;  // default the name is the number
-    this.peopleInCircle = []
-    
+    this.peopleInCircle = [];
+    this.rolesInCircle = [];
+
   }
 
   display() {
@@ -61,7 +62,7 @@ class PCircle {
       text("child name: "+ this.childrenOfThisCircle[i].name, this.x, this.y+ 60 + (i* 20)); 
     }
 
-
+    
     // display people in circle
     let angle = 0;
 
@@ -90,11 +91,47 @@ class PCircle {
       stroke(0);
       strokeWeight(2);
       ellipse(x1,y1,20); 
+      print("peopleInCircle");
+      print(peopleInCircle[i]);
+      //this.peopleInCircle[i]. 
+      angle = angle + angleDifference;  
+
+    }
+    
+    // display roles: 
+    /*
+    let angle = 0;
+    let angleDifference =  360 / this.rolesInCircle.length; 
+    for (let i = 0; i < this.rolesInCircle.length; i++){
+      text("role name: "+ this.rolesInCircle[i].name, this.x, this.y+ 100 + (i* 20)); 
+      // display circle
+      //print("angle diff " + angleDifference);
+
+      //print("angle " + angle);
+      //let angle = 180; 
+      // make circle coordinates on the perameter. 
+       
+      // center of big circle
+      let x0 = this.x;
+      let y0 = this.y;
+      // get coordinates
+
+      let x1 = x0 + this.radius * cos(angle);
+      let y1 = y0 + this.radius * sin(angle);
+      print(rolesInCircle);
+      //rolesInCircle[i].setX(x1); 
+      //rolesInCircle[i].setY(y1); 
+
+      fill(255);
+      stroke(0);
+      strokeWeight(2);
+      ellipse(x1,y1,20); 
 
       //this.peopleInCircle[i]. 
       angle = angle + angleDifference;  
 
     }
+    */
 
 
 
