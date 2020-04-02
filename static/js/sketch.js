@@ -1,3 +1,38 @@
+// by martin moltke wozniak -  munkefrugt@gmail.com
+ /*
+ plan:
+
+ a mother and a child circle will share 2 roles, lead link and rep link. 
+  a lead link will both will have the same person and same color. 
+
+
+  when a person is pressed or a role, (right side og screen ).
+  make it light up everywhere that person is.
+
+*/
+
+
+/*
+
+clean code: 
+https://www.youtube.com/watch?v=UjhX2sVf0eg
+
+#1: You're responsible for code quality.
+#2: Use meaningful names.
+#3: Write code that expresses intent.
+#4: Code should speak for itself. Less comments = less maintenance.
+#5: Leave the code better than you found it.
+#6: Single-responsibility code.
+i.e function does 1 thing well. Less arguments = better function.
+classes: most methods use most of the class' properties.
+#7: Tests (TDD).
+#8: Work on big picture skeleton, then fill in the details later 
+(interface first, implementation later).
+#9: Independent components that can be used in different places.
+#10: Master your craft.
+*/
+
+
 // Declare object
 let numOfCircles = 10;
 let circleId = 0;
@@ -17,6 +52,7 @@ let people = [];
 
 let focusCircle = null;
 let focusPerson = null; 
+let focusRole = null; 
 
 let inputButton;
 let newCircleBtn;
@@ -35,7 +71,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   
   frameRate(1); 
-
+                                                                                  
   // input
   input = createInput();
   input.position(19, 19);
@@ -44,7 +80,7 @@ function setup() {
   inputButton.position(input.x + input.width, 19);
   inputButton.mousePressed(changeNameOfCircle);
 
-  // make new circle button
+  // make new circchildrenOfThisCirclechildrenOfThisCirclele button
   newCircleBtn = createButton('add circle');
   newCircleBtn.position(19,inputButton.height+19);
   newCircleBtn.mousePressed(addCircle);  
@@ -71,34 +107,29 @@ function setup() {
   changeDomainBtn = createButton('change domain');
   changeDomainBtn.position(19, 350);
   changeDomainBtn.mousePressed(changeDomain);
-  
+  /*
   // add person to circle
   addPersonToCircleBtn = createButton('add person to circle');
   addPersonToCircleBtn.position(19, 350);
   addPersonToCircleBtn.mousePressed(addPersonToCircle);
-
+  */
   // add role to circle
   addRoleToCircleBtn = createButton('add role to circle');
   addRoleToCircleBtn.position(19, 350+30);
   addRoleToCircleBtn.mousePressed(addRoleToCircle);
 
+  // add person to role
+  addPersonToRoleBtn = createButton('add person to role');
+  addPersonToRoleBtn.position(19, 350+30+30);
+  addPersonToRoleBtn.mousePressed(addPersonToRole);
 
   // use push. 
 
   circles = [];
 
   circles.push(new PCircle(circleId));
-  //circles[0].rolesInCircle.push(new Role(roleID));
-  //circles[0].rolesInCircle[0].name = "first person ";
-  //circles[0].rolesInCircle[0].x = 10;
- 
-
-  print(circles);
-
-
-  person1 = new Person();
-  // create a person and add it to the general circle
-
+  circles[0].name = "general"; 
+  circles[0].y = 300; 
 
 }
 
@@ -106,82 +137,169 @@ function draw() {
 
   background(0,100,150);
   angleMode(DEGREES);
-
   // make lines
-  for (let i = 0; i < circles.length; i++) {
+  makeLines();
+  // make everything into functions as much as possible. 
+ 
 
-    if(circles[i].parrrentCircle != null){
-      stroke(0);
-      strokeWeight(2);
-      //fill(255);
-      line(circles[i].x,circles[i].y,circles[i].parrrentCircle.x,circles[i].parrrentCircle.y);
-    }
-  } 
-  
-  // DISPLAY CIRCLES: 
+  // DISPLAY CIRCLES and ROLES: 
 
-  // show all cirles. 
-  print("show circles")
-  print(circles);
   for (let i = 0; i < circles.length; i++) {
+    // display circles
     circles[i].display();
+    print(circles[i].rolesInCircle);
 
-    
-    print("circleId " + circles[i].circleId);
-    // display roles. 
-    print("print roles .lenght");
-    print(circles[i].rolesInCircle.length);
 
-    let angle;
+    // DISPLAY ROLES: 
+    // NEXT STEP: put everything below into this function to make it clear: 
+    // use this as function name-- > displayRoles(circles[i]);
+
+    let angle = 0;
     
     let angleDifference = 360/ circles[i].rolesInCircle.length;  
-
+    let x0 = circles[i].x;
+    let y0 = circles[i].y;
     for (let j = 0; j < circles[i].rolesInCircle.length; j++) {
-
-      /*print("roleName"); 
-      print(circles[i].rolesInCircle[j].name);   
-      print(circles[i].rolesInCircle[j].term);  
-      print(circles[i].rolesInCircle[j].domain);  
-      print(circles[i].rolesInCircle[j].roleId);    */
+      print("j  " +j);
 
       // give x and x for this role. 
       // role radius: 
       let eR = circles[i].rolesInCircle[j].radius; 
+      // x0, y0 is center of circle
 
-      let x1 = x0 + eR * cos(angle);
-      let y1 = y0 + eR * sin(angle);
+      let x1 = x0 + circles[i].radius * cos(angle);
+      let y1 = y0 + circles[i].radius * sin(angle);
+      
       circles[i].rolesInCircle[j].x = x1;
       circles[i].rolesInCircle[j].y = y1;
+      
 
-      //ellipse(x1, y1, 10);
-      fill(255);
+      // MAKE ROLES LIGHT UP. 
+      // make other roles with same person light up.
+      //lightRolesAndpeopleUp(circles[i].rolesInCircle[j]);      // reset role. 
+      if(!circles[i].rolesInCircle[j].isFocusRole){
+        circles[i].rolesInCircle[j].c = color(255);
+
+      }
+
+
+      if(focusRole != null && focusRole.person != null && circles[i].rolesInCircle[j].person != null){
+        //print("isFocusRole1"); 
+
+        
+        // if the role circle's person name matches the focusrols
+        if(focusRole.person.name == circles[i].rolesInCircle[j].person.name){
+          print("match");
+          print("print focus role true or false");
+          
+          // turn blue
+          if (circles[i].rolesInCircle[j].isFocusRole){
+
+            circles[i].rolesInCircle[j].c = color(0, 0, 255);
+
+          }
+          // make all other roles with same person green. 
+          else {
+            
+            circles[i].rolesInCircle[j].c = color(0, 255, 0);
+
+          }
+          
+
+        }
+        else{
+        //print("no match");
+
+        circles[i].rolesInCircle[j].c = color(255);
+
+        }
+       
+          
+      }
+      
+      
+     
+
+      
+
+      let c = circles[i].rolesInCircle[j].c;
+      
+      fill(c);
       stroke(0);
       strokeWeight(2);
       let eX = circles[i].rolesInCircle[j].x; 
       let eY = circles[i].rolesInCircle[j].y;
-
+      
       ellipse(eX,eY,eR *2);
 
-      angle = angle + angleDifference;  
+      angle = angle + angleDifference; 
 
+      }
+      
+      
+      // missing person for role
+      /*else if(circles[i].rolesInCircle[j].person == null) {
+        red (255, 0, 0);
+      } 
+      else {
+        circles[i].rolesInCircle[j].c = color(255);     
 
-    }
-    
+      }*/
+
+      //if lightUp
+      /*
+      if(circles[i].rolesInCircle[j].lightUp){
+        // turn green
+        if(circles[i].rolesInCircle[j].isFocusRole){
+
+        }
+        else{
+          circles[i].rolesInCircle[j].c = color(0, 255, 0);
+        }
+      }
+      // if not lightUp
+      else if(!circles[i].rolesInCircle[j].lightUp){
+        circles[i].rolesInCircle[j].c = color(255);
+      }
+      */
   }
-  
+  // make it into a function below. 
   // show info about circle
   if(focusCircle != null){
     stroke(0);
     strokeWeight(1);
     fill(255);
-    rect(12, 100, 200, 200);
+    let rectY = deleteCircleBtn.y+20; 
+    rect(12, rectY, 300, 220);
     
     fill(0);
     noStroke();
-    textAlign(LEFT); 
-    text("aim : "+focusCircle.aim, 12+10, 200);
-    text("domain : "+focusCircle.domain, 12+10, 220);
+    textAlign(LEFT);
+    textSize(16); 
+    text("circle info:",22, rectY+20);
+    text("Circle name: "+focusCircle.name, 22, rectY+40);
+    text("Circle aim: "+focusCircle.aim, 12+10, rectY+ 60);
+    text("Circle domain: "+focusCircle.domain, 22, rectY+80);
     
+
+    
+    if(focusRole != null ){
+      text("****************** :", 22, rectY+100);
+
+      text("Role info:", 22, rectY+120);
+      text("Role: "+focusRole.roleDescription, 12+10, rectY+140);
+
+      text("Description: "+focusRole.roleDescription, 12+10, rectY+160);
+      text("domain: "+focusRole.domain, 12+10, rectY+180);
+      text("term: "+focusRole.term, 12+10, rectY+200);
+
+      
+      if(focusRole.person != null){
+        text("person with role : "+focusRole.person.name, 12+10, rectY+220);
+      }
+      
+
+    }
 
   }
 
@@ -197,6 +315,7 @@ function draw() {
 
 
 // functions out of draw loop.
+
 function changeNameOfCircle() {
   let userInput = input.value();
   //print(userInput); 
@@ -284,7 +403,6 @@ function addCircle() {
   }
 
   
-  // make line from parent to child circle. 
 }
 
 
@@ -292,7 +410,46 @@ function addCircle() {
 
 function mouseClicked() {
   print("mouse clicked");
+
+  // check roles to activate. 
+  for (var i = 0; i < circles.length; i++) {
+    for (let j = 0; j < circles[i].rolesInCircle.length; j++) {
+    
+      if(circles[i].rolesInCircle[j].isMouseInRole(mouseX,mouseY)){
+        print("mouse in role"); 
+
+        if(focusRole!= null){
+          // make person circle white again
+          focusRole.isFocusRole = false; 
+
+          //circles[i].rolesInCircle[j].isFocusRole = false; 
+          print("made false")
+          print(circles[i].rolesInCircle[j].isFocusRole);
+          focusRole.c = color(255);
+          focusRole = null; 
+        }
+
+
+        // new focus Role
+        focusRole = circles[i].rolesInCircle[j]; 
+        circles[i].rolesInCircle[j].isFocusRole = true; 
+        print("made true")
+
+        print(circles[i].rolesInCircle[j].isFocusRole);
+
+        circles[i].rolesInCircle[j].c = color(0,0,255); 
+
+       
+
+        break
+      }
+      
+    }
+  }
+
+
   for (let i = 0; i < people.length; i++) {
+
     print("check people");  
     if(people[i].isMouseInPerson(mouseX,mouseY)){
       print("mouse is in person circle.");
@@ -316,9 +473,8 @@ function mouseClicked() {
       
     }
 
-    
   }
-  //print("next loop"); 
+
   // search for new circle to activate
 
 
@@ -394,6 +550,8 @@ function changeDomain(){
 }
 
 
+
+
 function changeAim(){
   if(focusCircle != null){
   let userInput = input.value();
@@ -402,7 +560,45 @@ function changeAim(){
   }
 }
 
+function addPersonToRole() {
+  if(focusPerson != null && focusRole != null){
+    //add person to role. 
+    focusRole.person = focusPerson; 
+    // add role to person
+    focusPerson.roles.push(focusRole);
+    /*
+    print("name of person in role"); 
+    print(focusRole.person.name);
+    print("focusPerson.roles");
+    print(focusPerson.roles)
+    */
+  }
+  else{
+    alert("role and person needs to be selected at the sametime to match them"); 
+  }
+}
 
+// take care of everything that has to do with coloring/ lighting up roles or person
+function lightRolesAndpeopleUp(){
+  // light roles
+
+
+  // light people
+
+}
+
+
+function makeLines(){
+  for (let i = 0; i < circles.length; i++) {
+
+    if(circles[i].parrrentCircle != null){
+      stroke(0);
+      strokeWeight(2);
+      //fill(255);
+      line(circles[i].x,circles[i].y,circles[i].parrrentCircle.x,circles[i].parrrentCircle.y);
+    }
+  } 
+}
 
 // messed up!!
 function deleteCircle() {

@@ -49,21 +49,26 @@ class PCircle {
     textSize(16);
     // puts text in center.
     textAlign(CENTER); 
-    text("circle name= "+ this.name, this.x, this.y);
+    // circle name
+    text( this.name, this.x, this.y);
 
-    text("id= "+this.circleId, this.x, this.y+20);
+    //text("id= "+this.circleId, this.x, this.y+20);
+
     // cant call the parrentCircle.name from this class.. ?? but it works from main
       //text("parrent: " +this.parrentCircle.name, this.x, this.y+40); 
     
     
     
     // children of circle info. 
+    /*
     for (let i = 0; i < this.childrenOfThisCircle.length; i++){
       text("child name: "+ this.childrenOfThisCircle[i].name, this.x, this.y+ 60 + (i* 20)); 
     }
+    */
 
     
     // display people in circle
+    /*
     let angle = 0;
 
     let angleDifference =  360 / this.peopleInCircle.length; 
@@ -91,12 +96,14 @@ class PCircle {
       stroke(0);
       strokeWeight(2);
       ellipse(x1,y1,20); 
-      print("peopleInCircle");
-      print(peopleInCircle[i]);
+      //print("peopleInCircle");
+      //print(peopleInCircle[i]);
       //this.peopleInCircle[i]. 
       angle = angle + angleDifference;  
 
     }
+    */
+    
     
     // display roles: 
     /*

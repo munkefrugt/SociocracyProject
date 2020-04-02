@@ -17,6 +17,8 @@ class Person {
         this.x = windowWidth -250;
         this.y = personId * 20 + 19; 
         this.c = color(255, 255, 255);
+
+        this.isFocusPerson= false; 
         // a person can have multiple roles
         this.roles = []; 
     }
