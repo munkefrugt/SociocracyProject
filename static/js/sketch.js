@@ -33,22 +33,14 @@ classes: most methods use most of the class' properties.
 */
 
 
-// Declare object
 let numOfCircles = 10;
 let circleId = 0;
 let personId = 0;
 let roleIdNum = 0;
-// array of circles
-//let circles = [];
 
 // the actual people. 
 let people = [];
 
-// it seems that both let or "empty variable type" can be accesd from other classses. 
-
-// let is normaly limited scope. 
-//let testLet = 8888; 
-//xtest = 99999;
 
 let focusCircle = null;
 let focusPerson = null; 
@@ -61,16 +53,13 @@ let changeAimBtn;
 let ChangeDomainBtn; 
 let newPersonBtn
 
-let person1; 
-//let activateCircleInfo = true;  
-//let latestAddedCircle; 
 
 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   
-  frameRate(1); 
+  frameRate(20); 
                                                                                   
   // input
   input = createInput();
@@ -91,39 +80,49 @@ function setup() {
   newPersonBtn.mousePressed(newPerson); 
   
   // delete circle button. 
-
+  
   deleteCircleBtn = createButton('delete circle');
   deleteCircleBtn.position(19, inputButton.height + newCircleBtn.height+19);
   deleteCircleBtn.mousePressed(deleteCircle); 
-
+  
   // change aim button. 
 
   changeAimBtn = createButton('change Aim');
-  changeAimBtn.position(19, 320);
+  changeAimBtn.position(19, 350);
   changeAimBtn.mousePressed(changeAim); 
 
-  // change domain button
   
   changeDomainBtn = createButton('change domain');
-  changeDomainBtn.position(19, 350);
+  changeDomainBtn.position(changeAimBtn.width+19, 350);
   changeDomainBtn.mousePressed(changeDomain);
-  /*
-  // add person to circle
-  addPersonToCircleBtn = createButton('add person to circle');
-  addPersonToCircleBtn.position(19, 350);
-  addPersonToCircleBtn.mousePressed(addPersonToCircle);
-  */
-  // add role to circle
+  
   addRoleToCircleBtn = createButton('add role to circle');
   addRoleToCircleBtn.position(19, 350+30);
   addRoleToCircleBtn.mousePressed(addRoleToCircle);
 
-  // add person to role
   addPersonToRoleBtn = createButton('add person to role');
   addPersonToRoleBtn.position(19, 350+30+30);
   addPersonToRoleBtn.mousePressed(addPersonToRole);
+  
+  changeNameOfRoleBtn = createButton('change Name Of Role');
+  changeNameOfRoleBtn.position(19, 350+30+60);
+  changeNameOfRoleBtn.mousePressed(changeNameOfRole);
+  
+  changeRoleDescriptionBtn = createButton('change role description');
+  changeRoleDescriptionBtn.position(19, 350+30+90);
+  changeRoleDescriptionBtn.mousePressed(changeRoleDescription);
 
-  // use push. 
+  
+
+  changeRoleTermBtn = createButton('change Role Term');
+  changeRoleTermBtn.position(19, 350+60+90+30);
+  changeRoleTermBtn.mousePressed(changeRoleTerm);
+
+  
+
+  changeRoleDomainBtn = createButton('change Role Domain');
+  changeRoleDomainBtn.position(19, 350+60+90+60);
+  changeRoleDomainBtn.mousePressed(changeRoleDomain);
 
   circles = [];
 
@@ -147,7 +146,6 @@ function draw() {
   for (let i = 0; i < circles.length; i++) {
     // display circles
     circles[i].display();
-    print(circles[i].rolesInCircle);
 
 
     // DISPLAY ROLES: 
@@ -160,7 +158,6 @@ function draw() {
     let x0 = circles[i].x;
     let y0 = circles[i].y;
     for (let j = 0; j < circles[i].rolesInCircle.length; j++) {
-      print("j  " +j);
 
       // give x and x for this role. 
       // role radius: 
@@ -189,18 +186,16 @@ function draw() {
         
         // if the role circle's person name matches the focusrols
         if(focusRole.person.name == circles[i].rolesInCircle[j].person.name){
-          print("match");
-          print("print focus role true or false");
+          //print("match");
           
-          // turn blue
+          //  blue
           if (circles[i].rolesInCircle[j].isFocusRole){
 
             circles[i].rolesInCircle[j].c = color(0, 0, 255);
 
           }
-          // make all other roles with same person green. 
           else {
-            
+            //green
             circles[i].rolesInCircle[j].c = color(0, 255, 0);
 
           }
@@ -208,7 +203,6 @@ function draw() {
 
         }
         else{
-        //print("no match");
 
         circles[i].rolesInCircle[j].c = color(255);
 
@@ -237,39 +231,14 @@ function draw() {
       }
       
       
-      // missing person for role
-      /*else if(circles[i].rolesInCircle[j].person == null) {
-        red (255, 0, 0);
-      } 
-      else {
-        circles[i].rolesInCircle[j].c = color(255);     
-
-      }*/
-
-      //if lightUp
-      /*
-      if(circles[i].rolesInCircle[j].lightUp){
-        // turn green
-        if(circles[i].rolesInCircle[j].isFocusRole){
-
-        }
-        else{
-          circles[i].rolesInCircle[j].c = color(0, 255, 0);
-        }
-      }
-      // if not lightUp
-      else if(!circles[i].rolesInCircle[j].lightUp){
-        circles[i].rolesInCircle[j].c = color(255);
-      }
-      */
+      
   }
-  // make it into a function below. 
   // show info about circle
   if(focusCircle != null){
     stroke(0);
     strokeWeight(1);
     fill(255);
-    let rectY = deleteCircleBtn.y+20; 
+    let rectY = newCircleBtn.y+20; 
     rect(12, rectY, 300, 220);
     
     fill(0);
@@ -287,7 +256,7 @@ function draw() {
       text("****************** :", 22, rectY+100);
 
       text("Role info:", 22, rectY+120);
-      text("Role: "+focusRole.roleDescription, 12+10, rectY+140);
+      text("Role: "+focusRole.name, 12+10, rectY+140);
 
       text("Description: "+focusRole.roleDescription, 12+10, rectY+160);
       text("domain: "+focusRole.domain, 12+10, rectY+180);
@@ -297,20 +266,14 @@ function draw() {
       if(focusRole.person != null){
         text("person with role : "+focusRole.person.name, 12+10, rectY+220);
       }
-      
-
     }
-
   }
-
 
   // show all people in the side bar: 
   for (let i = 0; i < people.length; i++) {
     people[i].display();
     
-  }
-
-  
+  } 
 }
 
 
@@ -341,9 +304,7 @@ function addPersonToCircle(){
   if(focusPerson != null){  
     // add a role to circle
     focusCircle.peopleInCircle.push(focusPerson); 
-    print("add person to circle");
-    //print(focusCircle.peopleInCircle);
-    // 
+    
     
   }
 }
@@ -355,15 +316,9 @@ function newPerson(){
     
     // get name from input
     let userInput = input.value();
-    if( userInput.length >=  3){
-      print("make new person");
+    if( userInput.length >=  2){
 
-      //alert("give new person a name in the")
     let person = new Person(userInput,personId);
-    
-    
-    //focusCircle.peopleInCircle.push(person); 
-
     
     people.push(person);
     personId ++; 
@@ -380,19 +335,18 @@ function addCircle() {
   
   if (focusCircle != null){
 
-  print("add new Circle");
   circleId ++; 
   newCircle = new PCircle(circleId)
+  
   // give it a parrent
   circles.push(newCircle);
+  newCircle.circlesArrayNum = circles.length -1; 
 
   newCircle.parrrentCircle = focusCircle;
-  // works
-  print("new parrent name : "+ newCircle.parrrentCircle.name);
-  print(newCircle.parrrentCircle);
+
+  //print("new parrent name : "+ newCircle.parrrentCircle.name);
+  //print(newCircle.parrrentCircle);
   
-  //newCircle.setParrent(focusCircle);
-  // add circle; 
   newCircle.c = color(0,200,200);
 
   // give the parrent circle a child. 
@@ -423,7 +377,6 @@ function mouseClicked() {
           focusRole.isFocusRole = false; 
 
           //circles[i].rolesInCircle[j].isFocusRole = false; 
-          print("made false")
           print(circles[i].rolesInCircle[j].isFocusRole);
           focusRole.c = color(255);
           focusRole = null; 
@@ -433,13 +386,11 @@ function mouseClicked() {
         // new focus Role
         focusRole = circles[i].rolesInCircle[j]; 
         circles[i].rolesInCircle[j].isFocusRole = true; 
-        print("made true")
 
         print(circles[i].rolesInCircle[j].isFocusRole);
 
         circles[i].rolesInCircle[j].c = color(0,0,255); 
 
-       
 
         break
       }
@@ -514,8 +465,8 @@ function mouseDragged() {
       //print("mouse dragged" + mouseDraggedTest); 
   //mouseDraggedTest++; 
   // get id
-  let focusId = focusCircle.circleId;
-
+  let focusId = focusCircle.circlesArrayNum;
+  print(focusId);
   circles[focusId].x = mouseX;
   circles[focusId].y = mouseY;
   }
@@ -532,6 +483,7 @@ function doubleClicked() {
       // make box
       activateCircleInfo = true; 
 
+      print(circles); 
 
     
 
@@ -578,6 +530,37 @@ function addPersonToRole() {
   }
 }
 
+function changeNameOfRole(){
+  if(focusRole != null){
+
+    let userInput = input.value();
+    print("changeNameOfRole"); 
+    focusRole.name = userInput; 
+    print(focusRole.name);
+    }
+}
+
+function changeRoleDescription(){
+  if(focusRole != null){
+    let userInput = input.value();
+    focusRole.roleDescription = userInput; 
+    }
+}
+
+function changeRoleTerm(){
+  if(focusRole != null){
+    let userInput = input.value();
+    focusRole.term = userInput; 
+    }
+}
+
+function changeRoleDomain(){
+  if(focusRole != null){
+    let userInput = input.value();
+    focusRole.domain = userInput; 
+    }
+}
+
 // take care of everything that has to do with coloring/ lighting up roles or person
 function lightRolesAndpeopleUp(){
   // light roles
@@ -602,7 +585,111 @@ function makeLines(){
 
 // messed up!!
 function deleteCircle() {
-  print("delete");
+  
+
+  let locaDeleteNum = focusCircle.circlesArrayNum; 
+
+  if(locaDeleteNum != 0 ){
+    
+    print("deleting"); 
+    newParrent = circles[locaDeleteNum].parrrentCircle;
+    //give the children new parretns
+    print("circles[locaDeleteId].childrenOfThisCircle")
+    print(circles[locaDeleteNum].childrenOfThisCircle); 
+
+
+    childArray = circles[locaDeleteNum].childrenOfThisCircle;
+
+    for (let i = 0; i < childArray.length; i++) {
+      childArray[i].parrrentCircle = newParrent;  
+      print("new parrent for child : " + childArray[i].name);
+      print("parrent name: " + childArray[i].parrrentCircle.name);
+
+    }
+    //print(circles); 
+
+    // delete
+    circles.splice(locaDeleteNum,1);
+
+  
+
+
+    // change the ids. now the array has moved!
+
+    // check this for making a tree. 
+    // https://stackoverflow.com/questions/19330731/tree-implementation-in-java-root-parents-and-children
+    
+    // locaDeleteNum = 1;
+    for (let i = locaDeleteNum; i < circles.length; i++) {
+      circles[i].circlesArrayNum --; 
+      
+    }
+
+
+
+
+/*
+    for (let i = circles.length-1; i >= 0; i--) {
+      print(i); 
+      print(circles[i]);
+      circles[locaDeleteNum].circlesArrayNum --; 
+
+    }
+    */
+    //print(circles); 
+
+    /*
+   let k = locaDeleteNum; 
+    while(k <  circles.length){
+      circles[k].circlesArrayNum --; 
+      k ++; 
+    }
+    
+    2 k
+    id circlesArrayNum
+    [0]  [0]
+    [1]  [1]
+    [2]  [2]
+    [3]  [3]
+    [4]  [4]*/
+
+  }
+  
+
+  /*
+  if(locaDeleteId != 0){
+  // give the current focus circle's children a new parrent. 
+
+    // find children of focus circle: 
+      // test get names of children. 
+      print("children of focus circle");
+
+
+  // find new parrent
+  newParrent = focusCircle.parrrentCircle; 
+  print("newParrent" + newParrent.name);
+  // take the chidren of this focus circle that is getting deleted -
+  //  and give them a new parrent.
+  focusCircle.giveChildrenNewParrent(newParrent); 
+
+  
+
+  
+    // delete from circles array 
+    circles.splice(locaDeleteId,1);
+      
+    // change the ids. now the array has moved!
+
+    while(locaDeleteId <  circles.length){
+      circles[locaDeleteId].circleId --; 
+      locaDeleteId ++; 
+    }
+  }
+  else alert("you cant delete this circle!"); 
+  print(circles); 
+  
+  
+
   /*
 
   // rewrite. 

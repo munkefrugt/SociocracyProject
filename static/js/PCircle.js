@@ -6,6 +6,8 @@ class PCircle {
 
 
     print("constructor");
+    
+    this.circlesArrayNum = circleId;
     this.aim = "default"; 
     this.domain = "default"; 
     this.x = mouseX+500;//random(width);
@@ -13,8 +15,6 @@ class PCircle {
 
     this.Vcenter = createVector(this.x, this.y);
     
-    //this.diameter = random(100, 200);
-    //this.radius = diameter/2;
     this.radius = 50;
     //this.color = color(0, 0, 0);
     this.c = color(255, 255, 255);
