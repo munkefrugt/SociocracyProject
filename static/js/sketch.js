@@ -568,16 +568,54 @@ function makeLinkLines() {
 
         let x0 = currentLoopRole.roleForArrowTail.x;
         let y0 = currentLoopRole.roleForArrowTail.y; 
-        let x1 = currentLoopRole.x;
+        let x1 = currentLoopRole.x; // target
         let y1 = currentLoopRole.y;
 
         stroke(0);
         strokeWeight(2);
-        let v0 = createVector(x0, y0);
-        let v1 = createVector(x1, y1);
-        //drawArrow(v0, v1, 'red'); 
-        line(x0,y0,x1,y1);
+        let vTail = createVector(x0, y0);
+        let vTargetInCenterOfRole = createVector(x1, y1);
+        //fill(color(255)); 
+        //line(vTail.x,vTail.y, vTargetInCenterOfRole.x,vTargetInCenterOfRole.y);
+
+        // point of arrow   vTail - vTargetInCenterOfRole
+        let pointOfArrow = p5.Vector.sub(vTail, vTargetInCenterOfRole)
+        pointOfArrow.normalize();  // make a unitvector
+        pointOfArrow.mult(currentLoopRole.radius+2);
+        pointOfArrow.add(vTargetInCenterOfRole);
+
+
+        vectorOnBase = p5.Vector.sub(pointOfArrow,vTail );
+        drawArrow(vTail,vectorOnBase,'red'); 
+
+        // draw arrow
+
+
+        // make an perpencicular vector
         
+
+
+        /*
+        let vectorFromHeadToTail  = p5.Vector.sub(vTail, vTargetInCenterOfRole)
+        vectorFromHeadToTail.normalize();  // make a unitvector
+        let fromHeadToPerpendicularPoint = vectorFromHeadToTail.mult(20);
+        // locate the vector in the right place
+        fromHeadToPerpendicularPoint.add(vTargetInCenterOfRole); 
+
+
+        // make an perpendicular vector. { x, y } becomes { y, -x }.
+        let vPerpendicular = createVector(vectorFromHeadToTail.y, - vectorFromHeadToTail.x );
+
+        // add it first
+
+        vPerpendicular.normalize; 
+        vPerpendicular. mult(20); 
+
+        
+        triangle(vPerpendicular.x,vPerpendicular.y, pointOfArrow.x,pointOfArrow.y, 300,300 );
+        
+        
+        */
 
       }
       
@@ -819,6 +857,21 @@ function displayPeople(){
 
 }
 
+// draw an arrow for a vector at a given base position
+function drawArrow(base, vec, myColor) {
+  push();
+  stroke(myColor);
+  strokeWeight(3);
+  fill(myColor);
+  translate(base.x, base.y);
+  line(0, 0, vec.x, vec.y);
+  rotate(vec.heading());
+  let arrowSize = 7;
+  translate(vec.mag() - arrowSize, 0);
+  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+  pop();
+}
+
 function deleteCircle() {
   
 
@@ -859,161 +912,20 @@ function deleteCircle() {
       circles[i].circlesArrayNum --; 
       
     }
-
-
-
-
-/*
-    for (let i = circles.length-1; i >= 0; i--) {
-      print(i); 
-      print(circles[i]);
-      circles[locaDeleteNum].circlesArrayNum --; 
-
-    }
-    */
-    //print(circles); 
-
-    /*
-   let k = locaDeleteNum; 
-    while(k <  circles.length){
-      circles[k].circlesArrayNum --; 
-      k ++; 
-    }
-    
-    2 k
-    id circlesArrayNum
-    [0]  [0]
-    [1]  [1]
-    [2]  [2]
-    [3]  [3]
-    [4]  [4]*/
-
   }
-  
-
-  /*
-  if(locaDeleteId != 0){
-  // give the current focus circle's children a new parrent. 
-
-    // find children of focus circle: 
-      // test get names of children. 
-      print("children of focus circle");
-
-
-  // find new parrent
-  newParrent = focusCircle.parrrentCircle; 
-  print("newParrent" + newParrent.name);
-  // take the chidren of this focus circle that is getting deleted -
-  //  and give them a new parrent.
-  focusCircle.giveChildrenNewParrent(newParrent); 
-
-  
-
-  
-    // delete from circles array 
-    circles.splice(locaDeleteId,1);
-      
-    // change the ids. now the array has moved!
-
-    while(locaDeleteId <  circles.length){
-      circles[locaDeleteId].circleId --; 
-      locaDeleteId ++; 
-    }
-  }
-  else alert("you cant delete this circle!"); 
-  print(circles); 
-  
-  
-
-  /*
-
-  // rewrite. 
-
-  
-
-
-  // get the id of the circle that gets deleted.
-  let locaDeleteId = focusCircle.circleId; 
-  // test if parrents are there. 
-  print("delete function, test parrent: "+ circles[locaDeleteId].parrrentCircle.name);
-  print(circles[locaDeleteId].parrrentCircle);
-
-  if(locaDeleteId != 0 ){
-    
-    print("deleting"); 
-    newParrent = circles[locaDeleteId].parrrentCircle;
-    //give the children new parretns
-    print("circles[locaDeleteId].childrenOfThisCircle")
-    print(circles[locaDeleteId].childrenOfThisCircle); 
-
-
-    childArray = circles[locaDeleteId].childrenOfThisCircle;
-
-    for (let i = 0; i < childArray.length; i++) {
-      childArray[i].parrrentCircle = newParrent;  
-      print("new parrent for child : " + childArray[i].name);
-      print("parrent name: " + childArray[i].parrrentCircle.name);
-
-    }
-
-    // delete
-    circles.splice(locaDeleteId,1);
-
-  
-
-
-    // change the ids. now the array has moved!
-    print("print ids")
-    for (let i = circles.length-1; i >= 0; i--) {
-      print(i); 
-      print(circles[i]);
-      circles[locaDeleteId].circleId --; 
-
-    }
-    
-    while(locaDeleteId <  circles.length){
-      circles[locaDeleteId].circleId --; 
-      locaDeleteId ++; 
-    }
-  }
-  */
-
-  /*
-  if(locaDeleteId != 0){
-  // give the current focus circle's children a new parrent. 
-
-    // find children of focus circle: 
-      // test get names of children. 
-      print("children of focus circle");
-
-
-  // find new parrent
-  newParrent = focusCircle.parrrentCircle; 
-  print("newParrent" + newParrent.name);
-  // take the chidren of this focus circle that is getting deleted -
-  //  and give them a new parrent.
-  focusCircle.giveChildrenNewParrent(newParrent); 
-
-  
-
-  
-    // delete from circles array 
-    circles.splice(locaDeleteId,1);
-      
-    // change the ids. now the array has moved!
-
-    while(locaDeleteId <  circles.length){
-      circles[locaDeleteId].circleId --; 
-      locaDeleteId ++; 
-    }
-  }
-  else alert("you cant delete this circle!"); 
-  print(circles); 
-  
  
- 
-  
+}
 
-  
-*/
+function drawArrow(base, vec, myColor) {
+  push();
+  stroke(myColor);
+  strokeWeight(3);
+  fill(myColor);
+  translate(base.x, base.y);
+  line(0, 0, vec.x, vec.y);
+  rotate(vec.heading());
+  let arrowSize = 7;
+  translate(vec.mag() - arrowSize, 0);
+  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+  pop();
 }
