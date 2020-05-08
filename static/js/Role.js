@@ -15,6 +15,8 @@ class Role {
     // make it light up
     this.lightUp = false; 
     this.isFocusRole = false; 
+    this.belongsInCircle; 
+    this.roleArrayNum; 
     
     
     // this role is the head another is the tail:

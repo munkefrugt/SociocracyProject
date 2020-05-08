@@ -86,7 +86,7 @@ function draw() {
 
   //tweekRolePositions(); 
 
-  makeLinkLines();
+  makeLinkArrows();
 
  
   displayCirclesAndRoles();
@@ -171,6 +171,10 @@ function makeButtons(){
   repositionRoleInCircleBtn.position(19, 350+60+90+90+30);
   repositionRoleInCircleBtn.mousePressed(repositionRoleInCircle);
 
+  deleteRoleBtn = createButton('delete role');
+  deleteRoleBtn.position(300, 350+60+90+90+30);
+  deleteRoleBtn.mousePressed(deleteRole);
+
 }
 
 function changeNameOfCircle() {
@@ -178,14 +182,22 @@ function changeNameOfCircle() {
   //print(userInput); 
   focusCircle.name = userInput; 
 }
+
 function addRoleToCircle(){
   if(focusCircle != null){
   let role = new Role();
   focusCircle.rolesInCircle.push(role); 
   role.roleId = roleIdNum;
+  role.belongsInCircle =  focusCircle;
+  
+  //print(role.belongsInCircle); 
   
   print("create role with id:")
   print(role.roleId); 
+
+  // give role arraynum. 
+  let currentNumberOfRolesInCircle = focusCircle.rolesInCircle.length
+  role.roleArrayNum = currentNumberOfRolesInCircle ++; 
 
   roleIdNum++; 
   buttonIsPressed = true; 
@@ -402,22 +414,7 @@ function mouseDragged() {
       circles[focusId].x = mouseX;
       circles[focusId].y = mouseY;
     }
-  //}
-  /*
-    if(focusRole.isMouseInRole(mouseX,mouseY)) {
-      print("roleDragged");
-      focusRole.positionGettingChangedByUser = true; 
-      focusRole.x = mouseX; 
-      focusRole.y = mouseY; 
-      print(focusRole.x); 
-      print(focusRole.y);
-
-
-    }
-  //}
-  */
-
-  
+ 
 } 
 
 function doubleClicked() {
@@ -543,7 +540,33 @@ function repositionRoleInCircle(){
 
 
 }
+// deleteRole
+function deleteRole(){
+  print("delete role");
 
+  if(focusRole != null){
+
+    let circleWithRoleIn = focusRole.belongsInCircle; 
+    let arrayGettingSpliced = circleWithRoleIn.rolesInCircle;
+    // make sure roleArrayNum get made. !! when role is made.
+    let locaDeleteNum = focusRole.roleArrayNum; 
+    locaDeleteNum--;
+    print(arrayGettingSpliced);
+
+    arrayGettingSpliced.splice(locaDeleteNum,1 );
+    print("locaDeleteNum"+ locaDeleteNum);
+    for (let i = locaDeleteNum; i < arrayGettingSpliced.length; i++) {
+      arrayGettingSpliced[i].roleArrayNum --; 
+      
+    }
+    print(arrayGettingSpliced);
+
+  }
+  else{ alert("select a role to delete");  }
+
+  buttonIsPressed = true; 
+  
+}
 
 
 function makeLines(){
@@ -557,7 +580,7 @@ function makeLines(){
 }
 
 
-function makeLinkLines() {
+function makeLinkArrows() {
 
   for (let i = 0; i < circles.length; i++) {
 
@@ -587,43 +610,9 @@ function makeLinkLines() {
 
         vectorOnBase = p5.Vector.sub(pointOfArrow,vTail );
         drawArrow(vTail,vectorOnBase,'red'); 
-
-        // draw arrow
-
-
-        // make an perpencicular vector
-        
-
-
-        /*
-        let vectorFromHeadToTail  = p5.Vector.sub(vTail, vTargetInCenterOfRole)
-        vectorFromHeadToTail.normalize();  // make a unitvector
-        let fromHeadToPerpendicularPoint = vectorFromHeadToTail.mult(20);
-        // locate the vector in the right place
-        fromHeadToPerpendicularPoint.add(vTargetInCenterOfRole); 
-
-
-        // make an perpendicular vector. { x, y } becomes { y, -x }.
-        let vPerpendicular = createVector(vectorFromHeadToTail.y, - vectorFromHeadToTail.x );
-
-        // add it first
-
-        vPerpendicular.normalize; 
-        vPerpendicular. mult(20); 
-
-        
-        triangle(vPerpendicular.x,vPerpendicular.y, pointOfArrow.x,pointOfArrow.y, 300,300 );
-        
-        
-        */
-
-      }
-      
-
-    }
-  
+      }      
+    }  
   }
-
 }
 
 function displayCirclesAndRoles(){

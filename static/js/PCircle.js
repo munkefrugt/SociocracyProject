@@ -60,8 +60,5 @@ class PCircle {
   makeChild(childCircle){
     this.childrenOfThisCircle.push(childCircle); 
   }
-  
-  
 
-  
 }
