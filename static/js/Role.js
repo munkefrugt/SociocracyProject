@@ -5,8 +5,9 @@ class Role {
     this.person; 
     this.term = "give a term"; 
     this.domain = "give a domain"; 
-    this.x;
-    this.y; 
+    this.x; // default
+    this.y; // default
+    this.rolePos = createVector(this.x, this.y);  
     
     this.radius = 10; 
     this.roleId; 
@@ -26,15 +27,16 @@ class Role {
     this.keepPosition = false; 
     this.radialNormalVector; 
     this.angleInCircle; 
+    this.arrowLink;
   }
 
-  setX(x1){
+  /*setX(x1){
     this.x = x1; 
   }
 
   setY(y1){
     this.y = y1; 
-  }
+  }*/
   isMouseInRole(px,py){
     let d = dist(px,py,this.x,this.y);
     if(d < this.radius){

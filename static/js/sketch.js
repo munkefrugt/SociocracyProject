@@ -37,15 +37,19 @@ let numOfCircles = 10;
 let circleId = 0;
 let personId = 0;
 let roleIdNum = 0;
+let arrowArrayNum = 0;
 
 // the actual people. 
 let people = [];
+let arrows = [];
 
 
 let focusCircle = null;
 let focusPerson = null; 
 let focusRole = null; 
 let lastFocusRole; 
+
+let currentArrow; 
 
 
 let inputButton;
@@ -84,16 +88,15 @@ function draw() {
   
   makeLines();
 
-  //tweekRolePositions(); 
-
-  makeLinkArrows();
-
+  displayLinkarrows();
  
   displayCirclesAndRoles();
 
   displayCircleInfo();
 
   displayPeople();
+
+  
    
 }
 
@@ -165,7 +168,7 @@ function makeButtons(){
 
   makeRoleLinkBtn = createButton('make Role Link');
   makeRoleLinkBtn.position(19, 350+60+90+90);
-  makeRoleLinkBtn.mousePressed(linkRoles);
+  makeRoleLinkBtn.mousePressed(addArrowLink);
 
   repositionRoleInCircleBtn = createButton('reposition Role In Circle');
   repositionRoleInCircleBtn.position(19, 350+60+90+90+30);
@@ -174,6 +177,8 @@ function makeButtons(){
   deleteRoleBtn = createButton('delete role');
   deleteRoleBtn.position(300, 350+60+90+90+30);
   deleteRoleBtn.mousePressed(deleteRole);
+
+  
 
 }
 
@@ -511,13 +516,24 @@ function changeRoleDomain(){
 
 }
 
-function linkRoles(){
+function addArrowLink(){
   // choose on focus role, then an other to link with. 
+  // focus role becomes head
   if (focusRole != null){
     
     focusRole.roleForArrowTail = lastFocusRole;
-    let arrowTailRole = focusRole.roleForArrowTail 
+    let arrowTailRole = focusRole.roleForArrowTail; 
     arrowTailRole.roleForArrowHead = focusRole;
+    
+    let arrowHeadRole = focusRole; 
+    let newArrowLink = new ArrowLink(arrowHeadRole,arrowTailRole); 
+    arrows.push(newArrowLink);
+    newArrowLink.arrowArrayNum= arrows.length -1; 
+
+
+    arrowTailRole.arrowLink = newArrowLink;
+    arrowHeadRole.arrowLink = newArrowLink;
+
     
   }
   else{ alert("choose a focus role, the last chosen role will be the tail of the arrow")}
@@ -531,7 +547,6 @@ function repositionRoleInCircle(){
   if(focusRole != null){
     focusRole.positionGettingChangedByUser = true;
     focusRole.keepPosition = false; 
-    //roleInRepositioning = true; 
 
   }
   else{ alert("select a role then press 'repositionRoleInCircle' and drag the role to where you want it in the circle");  }
@@ -540,11 +555,42 @@ function repositionRoleInCircle(){
 
 
 }
-// deleteRole
+
 function deleteRole(){
   print("delete role");
 
   if(focusRole != null){
+
+    // check if role has arrows pointing to it 
+    if(focusRole.arrowLink != null){
+
+      // check if there are more arrows to one role. 
+
+      
+
+
+      // delete arrow.
+      let locaDeleteNumArrowLink = focusRole.arrowLink.arrowArrayNum; 
+      print("locaDeleteNumArrowLink ************************ "+locaDeleteNumArrowLink); 
+
+      focusRole.arrowLink.clearArrowFromRoles(); 
+
+      arrows.splice(locaDeleteNumArrowLink,1 );
+      print("delete arrow");
+      print(arrows);
+      
+
+
+      for (let i = locaDeleteNumArrowLink; i < arrows.length; i++) {
+        arrows[i].arrowArrayNum --; 
+        
+      }
+
+      //if there are to kithen chefs, 2 or more arrows can point at on role. 
+
+
+    }
+
 
     let circleWithRoleIn = focusRole.belongsInCircle; 
     let arrayGettingSpliced = circleWithRoleIn.rolesInCircle;
@@ -568,6 +614,22 @@ function deleteRole(){
   
 }
 
+/*function deleteArrow() {
+  if (currentArrow !=null){
+    let locaDeleteNum = currentArrow.arrowArrayNum; 
+    arrows.splice(locaDeleteNum,1); 
+    for (let i = locaDeleteNum; i < arrows.length; i++) {
+      arrows[i].arrowArrayNum --; 
+      
+    }
+
+  }
+  else{
+    alert("select arrow to delete");
+  }
+  buttonIsPressed = true; 
+
+}*/
 
 function makeLines(){
   for (let i = 0; i < circles.length; i++) {
@@ -580,39 +642,18 @@ function makeLines(){
 }
 
 
-function makeLinkArrows() {
-
-  for (let i = 0; i < circles.length; i++) {
-
-    for (let j = 0; j < circles[i].rolesInCircle.length; j++) {
-    let currentLoopRole = circles[i].rolesInCircle[j]; 
-
-      if(currentLoopRole.roleForArrowTail != null){
-
-        let x0 = currentLoopRole.roleForArrowTail.x;
-        let y0 = currentLoopRole.roleForArrowTail.y; 
-        let x1 = currentLoopRole.x; // target
-        let y1 = currentLoopRole.y;
-
-        stroke(0);
-        strokeWeight(2);
-        let vTail = createVector(x0, y0);
-        let vTargetInCenterOfRole = createVector(x1, y1);
-        //fill(color(255)); 
-        //line(vTail.x,vTail.y, vTargetInCenterOfRole.x,vTargetInCenterOfRole.y);
-
-        // point of arrow   vTail - vTargetInCenterOfRole
-        let pointOfArrow = p5.Vector.sub(vTail, vTargetInCenterOfRole)
-        pointOfArrow.normalize();  // make a unitvector
-        pointOfArrow.mult(currentLoopRole.radius+2);
-        pointOfArrow.add(vTargetInCenterOfRole);
 
 
-        vectorOnBase = p5.Vector.sub(pointOfArrow,vTail );
-        drawArrow(vTail,vectorOnBase,'red'); 
-      }      
-    }  
+function displayLinkarrows(){
+  
+  for (let i = 0; i < arrows.length; i++) {
+    //arrows[i].displayArrow();
+    //drawArrow(base, vec, myColor)
+    arrows[i].updatePosition();
+    arrows[i].displayArrow();
+    //drawArrow(arrows[i].base,arrows[i].vec, arrows[i].color);
   }
+  
 }
 
 function displayCirclesAndRoles(){
@@ -846,6 +887,7 @@ function displayPeople(){
 
 }
 
+/*
 // draw an arrow for a vector at a given base position
 function drawArrow(base, vec, myColor) {
   push();
@@ -859,7 +901,7 @@ function drawArrow(base, vec, myColor) {
   translate(vec.mag() - arrowSize, 0);
   triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
   pop();
-}
+}*/
 
 function deleteCircle() {
   
